@@ -147,7 +147,8 @@ class LinkedList {
     this.printLinkedList(p1);
   }
 
-  //insert node at middle....2 pointer---Important concept...
+  //insert node at middle....2 pointer---Important concept..
+  //Runner technique..in which there are 2 runers ... a fast runner(2x speed) and a slow runner(x speed)...
   insertAtMiddle(data) {
     var p1 = this.head;
     var p2 = this.head;
@@ -210,6 +211,49 @@ class LinkedList {
     return this.head == null;
   }
 
+  //MERGE SORT..
+  //Break linked list into 2
+
+  merge2LL(head1, head2) {
+    if (head1 == null) {
+      return head2;
+    }
+    if (head2 == null) {
+      return head1;
+    }
+
+    if (head1.data < head2.data) {
+      head1.next = this.merge2LL(head1.next, head2);
+      return head1;
+    } else {
+      head2.next = this.merge2LL(head1, head2.next);
+      return head2;
+    }
+  }
+
+  breakInto2(node) {
+    var slow = node;
+    var fast = node;
+    while (fast.next != null && fast.next.next != null) {
+      slow = slow.next;
+      fast = fast.next.next;
+    }
+    var node2 = slow.next;
+    slow.next = null;
+    return [node, node2];
+  }
+
+  mergeSort(node = this.head) {
+    if (node == null || node.next == null) {
+      return node;
+    }
+    var [node1, node2] = this.breakInto2(node);
+    var head1 = this.mergeSort(node1);
+    var head2 = this.mergeSort(node2);
+    var mergedList = this.merge2LL(head1, head2);
+    return mergedList;
+  }
+
   // print a linked list...
   printLinkedList() {
     var temp = this.head;
@@ -225,68 +269,7 @@ class LinkedList {
   }
 }
 
-//merge 2 linked list...and return a new list...
-function merge2LL2(p1, p2) {
-  if (p1 == null) {
-    var smallNode1 = null;
-    var smallNode2 = null;
-    while (p2 != null) {
-      var newNode = new Node(p2.data);
-      if (smallNode1 == null) {
-        smallNode1 = newNode;
-        smallNode2 = newNode;
-      } else {
-        smallNode2.next = newNode;
-        smallNode2 = smallNode2.next;
-      }
-      p2 = p2.next;
-    }
-    return smallNode1;
-  }
-  if (p2 == null) {
-    var smallNode1 = null;
-    var smallNode2 = null;
-    while (p1 != null) {
-      var newNode = new Node(p1.data);
-      if (smallNode1 == null) {
-        smallNode1 = newNode;
-        smallNode2 = newNode;
-      } else {
-        smallNode2.next = newNode;
-        smallNode2 = smallNode2.next;
-      }
-      p1 = p1.next;
-    }
-    return smallNode1;
-  }
-
-  if (p1.data < p2.data) {
-    var newNode = new Node(p1.data);
-    newNode.next = merge2LL2(p1.next, p2);
-  } else {
-    var newNode = new Node(p2.data);
-    newNode.next = merge2LL2(p1, p2.next);
-  }
-  return newNode;
-}
-
-function merge2LL1(p1, p2) {
-  var newLL = new LinkedList();
-  newLL.head = merge2LL2(p1, p2);
-  return newLL;
-}
-
 var LLObj = new LinkedList();
-LLObj.createLinkedList([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+LLObj.createLinkedList([1, 2, 4, 3, 2, 1, 7, 8, 10, 5, 9, 6]);
+LLObj.mergeSort();
 LLObj.printLinkedList();
-LLObj.KReverse(2);
-LLObj.printLinkedList();
-
-var ll1 = new LinkedList();
-ll1.createLinkedList([1, 5, 7, 10]);
-var ll2 = new LinkedList();
-ll2.createLinkedList([2, 3, 6]);
-
-//merge 2 linked list....and return a new list...
-var newList = merge2LL1(ll1.getHead(), ll2.getHead());
-newList.printLinkedList();
